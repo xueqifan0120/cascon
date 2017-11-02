@@ -12,7 +12,6 @@ IBM Data Science Experience (DSX) is a comprehensive Data Science development fr
 - [Exercise 2: Creating a model using model builder](https://github.com/mlhubca/cascon/blob/master/Readme.md#exercise-2-creating-a-model-using-model-builder)
 - [Exercise 3: Creating a flow using Canvas](https://github.com/mlhubca/cascon/blob/master/Readme.md#exercise-3-creating-a-flow-using-canvas)
 - [Exercise 4: Adding visualizations to the notebook](https://github.com/mlhubca/cascon/blob/master/Readme.md#exercise-4-adding-visualizations-to-the-notebook)
-- [Exercise 5: Automating algnorthm selection using CADS (IBM Cognitive Assistant for Data Scientists)](https://github.com/mlhubca/cascon/blob/master/Readme.md#exercise-5-automating-algnorthm-selection-using-cads-ibm-cognitive-assistant-for-data-scientists)
 
 It's suggested that you go through these exercises in order.
 
@@ -329,35 +328,4 @@ plt.show()
 Out [12]:
 
 ![](https://github.com/mlhubca/cascon/blob/master/images/play12.png)
-
-
-## Exercise 5: Automating algnorthm selection using CADS (IBM Cognitive Assistant for Data Scientists)
-
-1) Open notebook "Play Tennis" in edit mode
-
-2) Locate the following cell
-```
-pipeline_dt = Pipeline(stages=[stringIndexer_label, stringIndexer_outlook, stringIndexer_temp, stringIndexer_humi, stringIndexer_wind, vectorAssembler_features, dt, labelConverter])
-```
-3) Replace the code in this cell with the following code:
-```
-from pyspark.ml.classification import LogisticRegression
-from pyspark.ml.classification import NaiveBayes
-from com.ibm.analytics.wml.cads import CADSEstimator
-from com.ibm.analytics.wml.cads import Learner, Target
-
-lr = LogisticRegression(labelCol="label", featuresCol="features", regParam=0.01)
-nb = NaiveBayes(labelCol="label", featuresCol="features", smoothing=1.0)
-
-learners = [Learner("LR", lr), Learner("NB", nb)]
-cads = CADSEstimator().setLearners(learners)\
-        .setEvaluator(MulticlassClassificationEvaluator(labelCol="label", predictionCol="prediction", metricName="accuracy"))\
-        .setTarget(Target("prediction", "label"))\
-        .setInitialSampleSize(2)\
-        .setNumSampleFolds(2)\
-        .setKeepBestNLearners(2)
-               
-pipeline_dt = Pipeline(stages=[stringIndexer_label, stringIndexer_outlook, stringIndexer_temp, stringIndexer_humi, stringIndexer_wind, vectorAssembler_features, cads, labelConverter])
-```
-4) Run all cells
 
