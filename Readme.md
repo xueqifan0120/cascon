@@ -54,7 +54,7 @@ You and a friend generally meet up in the morning at a local tennis court to pla
 
 - Sign up and login to DSX: https://datascience.ibm.com/
 - Create a new project "Play Tennis"
-- Download file "tennis.csc" to your local machine
+- Download file "tennis.csv" to your local machine
     - Go to <https://github.com/mlhubca/cascon/blob/master/tennis.csv>
     - In the top right, righ click the Raw button
     - Save as...
@@ -125,7 +125,7 @@ test_data = splitted_data[1]
 ```
 In [6]
 ```
-stringIndexer_label = StringIndexer(inputCol="Play", outputCol="label").fit(df)
+stringIndexer_label = StringIndexer(inputCol="Play", outputCol="label").fit(df_data_1)
 stringIndexer_outlook = StringIndexer(inputCol="Outlook", outputCol="outlook_code")
 stringIndexer_temp = StringIndexer(inputCol="Temperature", outputCol="temperature_code")
 stringIndexer_humi = StringIndexer(inputCol="Humidity", outputCol="humidity_code")
