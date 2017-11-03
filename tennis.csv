@@ -1,7 +1,7 @@
 Outlook,Temperature,Humidity,Wind,Play
 sunny,hot,high,strong,no
-sunny,hot,high,weak,no
 overcast,hot,high,weak,yes
+sunny,hot,high,weak,no
 rain,mild,high,weak,yes
 rain,cool,normal,weak,yes
 rain,cool,normal,strong,no
