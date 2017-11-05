@@ -6,7 +6,7 @@
 
 In these lab exercises, you will learn how to create machine learning models in a notebook, via model builder wizard, and using Flow. You will also learn how to use open source technologies to visualize data and automatically select the best algorithm. All the tools and technologies used in the exercises are readily available on IBM Data Science Experience (DSX).
 
-IBM Data Science Experience (DSX) is a comprehensive Data Science development framework. You can find more details and sign up for 30 day trail at https://datascience.ibm.com/.
+IBM Data Science Experience (DSX) is a comprehensive Data Science development framework. You can find more details and sign up for 30 day trial at https://datascience.ibm.com/.
 
 ### Exercise Summary
 
@@ -58,7 +58,7 @@ You and a friend generally meet up in the morning at a local tennis court to pla
 - Download file "tennis.csv" to your local machine
     - Go to <https://github.com/mlhubca/cascon/blob/master/tennis.csv>
     - In the top right, righ click the Raw button
-    - Save as...
+    - Save as ...
 - Upload file "tennis.csv" to project "Play Tennis"
 
 
@@ -66,7 +66,7 @@ You and a friend generally meet up in the morning at a local tennis court to pla
 ## Exercise 1: Creating a model using a notebook
 
 1) Add a new notebook using language Python 2 with Spark 2.0
-2) Add code to access file "tennis.csc" from the notebook
+2) Add code to access file "tennis.csv" from the notebook
     - Open Find and Add Data pane from the Notebook Toolbar
     - Find tennis.csv file, select "Insert SparkSession DataFrame" from "Insert to code" dropdown
     - The code will be inserted to the first cell of the notebook, as:
@@ -96,7 +96,7 @@ df_data_1 = spark.read\
   .load(bmos.url('Tennis', 'tennis.csv'))
 df_data_1.take(5)
 ```
-3) Execute the cell 
+3) Execute the cell by pressing Ctrl + Enter or going to Notebook toolbar and selecting `Run -> Run Cells`.
 
 4) Add the following cells and execute them in order
 
