@@ -72,7 +72,7 @@ You and a friend generally meet up in the morning at a local tennis court to pla
     - The code will be inserted to the first cell of the notebook, as:
     
 In [1]
-```
+```python
 import ibmos2spark
 
 # @hidden_cell
@@ -101,7 +101,7 @@ df_data_1.take(5)
 4) Add the following cells and execute them in order. Almost each cell is accompanied by a short description in comment format. At any time during the exercise, feel free to ask a workshop host further clarification or questions. 
 
 In [2]
-```
+```python
 from pyspark.ml.feature import OneHotEncoder, StringIndexer, IndexToString
 from pyspark.ml.linalg import Vectors
 from pyspark.ml.feature import VectorAssembler
@@ -111,22 +111,22 @@ from pyspark.ml.evaluation import BinaryClassificationEvaluator
 from pyspark.ml import Pipeline, Model
 ```
 In [3]
-```
+```python
 df_data_1.show()
 ```
 In [4]
-```
+```python
 df_data_1.printSchema()
 ```
 In [5]
-```
+```python
 # Randomly split the data into train and test datasets.
 splitted_data = df_data_1.randomSplit([0.85, 0.15], 48)
 train_data = splitted_data[0]
 test_data = splitted_data[1]
 ```
 In [6]
-```
+```python
 # Encode each string label column (i.e., Outlook, etc.) to an label index column.
 # For instance, the values of the Outlook label column (rain, sunny, overcast) will be mapped to the indices 0, 1 and 2 respectively.
 stringIndexer_label = StringIndexer(inputCol="Play", outputCol="label").fit(df_data_1)
@@ -136,7 +136,7 @@ stringIndexer_humi = StringIndexer(inputCol="Humidity", outputCol="humidity_code
 stringIndexer_wind = StringIndexer(inputCol="Wind", outputCol="wind_code")
 ```
 In [7]
-```
+```python
 # Combine the list of input columns (Outlook, Temperature, etc.) into a single vector column.
 # In each row, the values of the input columns will be concatenated into a vector in the specified order.
 vectorAssembler_features = VectorAssembler(inputCols=["outlook_code", "temperature_code", "humidity_code", "wind_code"], outputCol="features")
@@ -145,29 +145,29 @@ vectorAssembler_features = VectorAssembler(inputCols=["outlook_code", "temperatu
 dt = DecisionTreeClassifier(labelCol="label", featuresCol="features")
 ```
 In [8]
-```
+```python
 # The classifier will output a column called "prediction" with label indices for the predicted label.
 # We wish to map that column back to a column containing the original labels as strings. 
 labelConverter = IndexToString(inputCol="prediction", outputCol="predictedLabel", labels=stringIndexer_label.labels)
 ```
 In [9]
-```
+```python
 # Create a pipeline, a series of algorithms that transform a dataset.
 pipeline_dt = Pipeline(stages=[stringIndexer_label, stringIndexer_outlook, stringIndexer_temp, stringIndexer_humi, stringIndexer_wind, vectorAssembler_features, dt, labelConverter])
 ```
 In [10]
-```
+```python
 # Fit the pipeline to the training dataset.
 model_dt = pipeline_dt.fit(train_data)
 ```
 In [11]
-```
+```python
 # Make predictions on the testing dataset.
 predictions = model_dt.transform(test_data)
 ```
 
 In [12]
-```
+```python
 # Evaluate the performance of the decision tree classifier.
 evaluatorDT = BinaryClassificationEvaluator(labelCol="label", rawPredictionCol="rawPrediction", metricName="areaUnderROC")
 accuracy = evaluatorDT.evaluate(predictions)
@@ -176,7 +176,7 @@ print("Accuracy = %g" % accuracy)
 ```
 
 In [13]
-```
+```python
 # Create an unseen instance of weather conditions.
 new_data = [{'Outlook': 'rain', 'Temperature': 'hot', 'Humidity': 'normal', 'Wind': 'strong'}]
 
@@ -185,7 +185,7 @@ new_df.show()
 ```
 
 In [14]
-```
+```python
 # Make a new prediction on the unseen instance.
 new_predictions = model_dt.transform(new_df)
 new_predictions.select("predictedLabel").show()
