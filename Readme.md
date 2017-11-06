@@ -98,7 +98,7 @@ df_data_1.take(5)
 ```
 3) Execute the cell by pressing Ctrl + Enter or going to Notebook toolbar and selecting `Run -> Run Cells`.
 
-4) Add the following cells and execute them in order.
+4) Add the following cells and execute them in order. Almost each cell is accompanied by a short description in comment format. At any time during the exercise, feel free to ask a workshop host further clarification or questions. 
 
 In [2]
 ```
