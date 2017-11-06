@@ -45,30 +45,30 @@ You and a friend generally meet up in the morning at a local tennis court to pla
 
 - A dataset from which the model is to be built.
 - Each column is an attribute.
-- Each row is an example (instance)
-- The attribute Play is the variable to be learned. 
-- The possible labels of each example are yes and no.
-- Goal: building a model to predict unseen instances, e.g.: {rain, hot, normal, strong}
+- Each row is an example (instance).
+- The attribute `Play` is the variable to be learned. 
+- The possible labels of each example are `yes` and `no`.
+- Goal: build a model to predict unseen instances, e.g.: `{rain, hot, normal, strong}`
 
 
 ### Prerequisites
 
 - Sign up and login to DSX: https://datascience.ibm.com/
 - Create a new project "Play Tennis"
-- Download file "tennis.csv" to your local machine
+- Download file `tennis.csv` to your local machine
     - Go to <https://github.com/mlhubca/cascon/blob/master/tennis.csv>
     - In the top right, righ click the Raw button
     - Save as ...
-- Upload file "tennis.csv" to project "Play Tennis"
+- Upload file `tennis.csv` to project "Play Tennis"
 
 
 
 ## Exercise 1: Creating a model using a notebook
 
 1) Add a new notebook using language Python 2 with Spark 2.0
-2) Add code to access file "tennis.csv" from the notebook
+2) Add code to access file `tennis.csv` from the notebook
     - Open Find and Add Data pane from the Notebook Toolbar
-    - Find tennis.csv file, select "Insert SparkSession DataFrame" from "Insert to code" dropdown
+    - Find `tennis.csv` file, select "Insert SparkSession DataFrame" from "Insert to code" dropdown
     - The code will be inserted to the first cell of the notebook, as:
     
 In [1]
@@ -98,7 +98,7 @@ df_data_1.take(5)
 ```
 3) Execute the cell by pressing Ctrl + Enter or going to Notebook toolbar and selecting `Run -> Run Cells`.
 
-4) Add the following cells and execute them in order
+4) Add the following cells and execute them in order.
 
 In [2]
 ```
@@ -120,12 +120,15 @@ df_data_1.printSchema()
 ```
 In [5]
 ```
+# Randomly split the data into train and test datasets.
 splitted_data = df_data_1.randomSplit([0.85, 0.15], 48)
 train_data = splitted_data[0]
 test_data = splitted_data[1]
 ```
 In [6]
 ```
+# Encode each string label column (i.e., Outlook, etc.) to an label index column.
+# For instance, the values of the Outlook label column (rain, sunny, overcast) will be mapped to the indices 0, 1 and 2 respectively.
 stringIndexer_label = StringIndexer(inputCol="Play", outputCol="label").fit(df_data_1)
 stringIndexer_outlook = StringIndexer(inputCol="Outlook", outputCol="outlook_code")
 stringIndexer_temp = StringIndexer(inputCol="Temperature", outputCol="temperature_code")
@@ -134,38 +137,56 @@ stringIndexer_wind = StringIndexer(inputCol="Wind", outputCol="wind_code")
 ```
 In [7]
 ```
+# Combine the list of input columns (Outlook, Temperature, etc.) into a single vector column.
+# In each row, the values of the input columns will be concatenated into a vector in the specified order.
 vectorAssembler_features = VectorAssembler(inputCols=["outlook_code", "temperature_code", "humidity_code", "wind_code"], outputCol="features")
+
+# Create a decision tree classifier. The constructor takes two input columns: the feature vector and the label to predict.
 dt = DecisionTreeClassifier(labelCol="label", featuresCol="features")
 ```
 In [8]
 ```
+# The classifier will output a column called "prediction" with label indices for the predicted label.
+# We wish to map that column back to a column containing the original labels as strings. 
 labelConverter = IndexToString(inputCol="prediction", outputCol="predictedLabel", labels=stringIndexer_label.labels)
 ```
 In [9]
 ```
+# Create a pipeline, a series of algorithms that transform a dataset.
 pipeline_dt = Pipeline(stages=[stringIndexer_label, stringIndexer_outlook, stringIndexer_temp, stringIndexer_humi, stringIndexer_wind, vectorAssembler_features, dt, labelConverter])
 ```
 In [10]
 ```
+# Fit the pipeline to the training dataset.
 model_dt = pipeline_dt.fit(train_data)
 ```
 In [11]
 ```
+# Make predictions on the testing dataset.
 predictions = model_dt.transform(test_data)
+```
+
+In [12]
+```
+# Evaluate the performance of the decision tree classifier.
 evaluatorDT = BinaryClassificationEvaluator(labelCol="label", rawPredictionCol="rawPrediction", metricName="areaUnderROC")
 accuracy = evaluatorDT.evaluate(predictions)
 
 print("Accuracy = %g" % accuracy)
 ```
-In [12]
+
+In [13]
 ```
+# Create an unseen instance of weather conditions.
 new_data = [{'Outlook': 'rain', 'Temperature': 'hot', 'Humidity': 'normal', 'Wind': 'strong'}]
 
 new_df = sqlContext.createDataFrame(new_data)
 new_df.show()
 ```
-In [13]
+
+In [14]
 ```
+# Make a new prediction on the unseen instance.
 new_predictions = model_dt.transform(new_df)
 new_predictions.select("predictedLabel").show()
 ```
