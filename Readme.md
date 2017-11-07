@@ -221,7 +221,7 @@ new_predictions.select("predictedLabel").show()
 
 ## Exercise 3: Creating a flow using Canvas
 
-![](https://github.com/mlhubca/cascon/blob/master/images/PlayTennisFlow.png)
+![](https://github.com/mlhubca/cascon/blob/master/images/playTennisFlow_new.png)
 
 1) Add a new flow using "add flows" button or from the "Add to project" dropdown, select "Flow"
 2) On the Create Flow page,
